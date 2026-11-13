@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI-Based Spam Detection System{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Custom Cyber Dark Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top cyber-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+                <span class="cyber-icon-badge"><i class="fa-solid fa-shield-halved"></i></span>
+                <span class="brand-text">SpamGuard<span class="text-cyan">.AI</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-1 align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{{ url_for('index') }}">
+                            <i class="fa-solid fa-house me-1"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Detection Engines Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if 'detect' in request.path %}active{% endif %}" href="#" id="detectorDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-microchip me-1 text-cyan"></i> Detectors
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark cyber-dropdown border-secondary shadow" aria-labelledby="detectorDropdown">
+                            <li>
+                                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ url_for('detect') }}">
+                                    <i class="fa-solid fa-comment-sms text-cyan"></i>
+                                    <div>
+                                        <div class="fw-semibold">Message Detector</div>
+                                        <small class="text-muted-cyber extra-small">SMS & Text Spam AI</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider border-secondary my-1"></li>
+                            <li>
+                                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ url_for('detect_link') }}">
+                                    <i class="fa-solid fa-link text-warning"></i>
+                                    <div>
+                                        <div class="fw-semibold">Link & URL Scanner</div>
+                                        <small class="text-muted-cyber extra-small">Phishing & Malicious URLs</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider border-secondary my-1"></li>
+                            <li>
+                                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ url_for('detect_file') }}">
+                                    <i class="fa-solid fa-file-shield text-info"></i>
+                                    <div>
+                                        <div class="fw-semibold">File & Batch Scanner</div>
+                                        <small class="text-muted-cyber extra-small">CSV, TXT, Logs & Documents</small>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
+                            <i class="fa-solid fa-chart-pie me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/history' %}active{% endif %}" href="{{ url_for('history') }}">
+                            <i class="fa-solid fa-clock-rotate-left me-1"></i> History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about' %}active{% endif %}" href="{{ url_for('about') }}">
+                            <i class="fa-solid fa-circle-info me-1"></i> About
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow-1 py-4">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cyber-footer text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-1 text-muted-cyber small">
+                &copy; 2026 <strong>AI-Based Spam Detection System</strong> | BCA AI & ML Project
+            </p>
+            <p class="mb-0 text-muted-cyber extra-small">
+                Multi-Modal Threat Defense: SMS Spam &bull; Phishing URLs &bull; Batch Document Analysis
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

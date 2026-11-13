@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - AI Multi-Vector Threat Detection System{% endblock %}
+
+{% block content %}
+<div class="row align-items-center py-5">
+    <div class="col-lg-7 text-center text-lg-start">
+        <div class="badge cyber-badge mb-3">
+            <i class="fa-solid fa-microchip me-1 text-cyan"></i> Multi-Vector Cybersecurity AI Defense
+        </div>
+        <h1 class="display-4 fw-bold mb-3 text-white">
+            Intelligent <span class="gradient-text">Spam, Link & File</span> Threat Detection
+        </h1>
+        <p class="lead text-muted-cyber mb-4">
+            Protect against malicious phishing links, fraudulent SMS prize scams, and infected bulk text files. Our multi-engine security platform analyzes text semantics, URL heuristics, and batch documents in real time.
+        </p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+            <a href="{{ url_for('detect') }}" class="btn btn-cyber-primary btn-lg px-4 py-2">
+                <i class="fa-solid fa-comment-sms me-2"></i> Scan Message
+            </a>
+            <a href="{{ url_for('detect_link') }}" class="btn btn-cyber-outline btn-lg px-4 py-2">
+                <i class="fa-solid fa-link me-2"></i> Inspect URL
+            </a>
+            <a href="{{ url_for('detect_file') }}" class="btn btn-cyber-secondary btn-lg px-4 py-2">
+                <i class="fa-solid fa-file-shield me-2"></i> Upload File
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-5 mt-5 mt-lg-0 text-center">
+        <div class="hero-card cyber-card p-4 mx-auto">
+            <div class="hero-icon mb-3">
+                <i class="fa-solid fa-shield-virus text-cyan fa-4x animate-pulse"></i>
+            </div>
+            <h5 class="text-white mb-2">3-in-1 Threat Defense Suite</h5>
+            <p class="text-muted-cyber small mb-3">
+                Unified engine protecting against deceptive social engineering across messages, links, and documents.
+            </p>
+            <div class="d-flex justify-content-around text-center border-top border-secondary pt-3 mt-3">
+                <div>
+                    <h5 class="text-cyan mb-0">97.7%</h5>
+                    <small class="text-muted-cyber">Model Accuracy</small>
+                </div>
+                <div>
+                    <h5 class="text-success mb-0">11+</h5>
+                    <small class="text-muted-cyber">URL Heuristics</small>
+                </div>
+                <div>
+                    <h5 class="text-info mb-0">Batch</h5>
+                    <small class="text-muted-cyber">File Support</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Three Specialized Detection Cards -->
+<div class="row g-4 mt-2">
+    <div class="col-md-4">
+        <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="feature-icon mb-3 text-cyan">
+                    <i class="fa-solid fa-comment-sms fa-2x"></i>
+                </div>
+                <h4 class="text-white fw-bold mb-2">Message Spam Detection</h4>
+                <p class="text-muted-cyber small mb-4">
+                    Analyzes individual SMS and chat messages using our trained Scikit-learn Logistic Regression classifier with TF-IDF n-gram vectorization.
+                </p>
+            </div>
+            <a href="{{ url_for('detect') }}" class="btn btn-cyber-primary w-100">
+                Launch Message Scanner <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="feature-icon mb-3 text-warning">
+                    <i class="fa-solid fa-link fa-2x"></i>
+                </div>
+                <h4 class="text-white fw-bold mb-2">Link & URL Scanner</h4>
+                <p class="text-muted-cyber small mb-4">
+                    Deep structural inspection checking for suspicious TLDs, URL shorteners, direct IP hosting, deceptive keyword lures, and brand typosquatting.
+                </p>
+            </div>
+            <a href="{{ url_for('detect_link') }}" class="btn btn-cyber-outline w-100">
+                Launch Link Scanner <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <div class="feature-icon mb-3 text-info">
+                    <i class="fa-solid fa-file-shield fa-2x"></i>
+                </div>
+                <h4 class="text-white fw-bold mb-2">File & Batch Scanner</h4>
+                <p class="text-muted-cyber small mb-4">
+                    Upload CSV, TXT, TSV, or JSON files. Automatically extracts text lines and performs bulk batch classification with full threat breakdown reports.
+                </p>
+            </div>
+            <a href="{{ url_for('detect_file') }}" class="btn btn-cyber-secondary w-100 text-white">
+                Launch File Scanner <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

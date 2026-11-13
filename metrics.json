@@ -1,0 +1,10 @@
+{
+    "accuracy": 97.67,
+    "precision": 100.0,
+    "recall": 82.55,
+    "f1_score": 90.44,
+    "total_samples": 5574,
+    "train_samples": 4459,
+    "test_samples": 1115,
+    "trained_at": "2026-11-13 23:15:17"
+}

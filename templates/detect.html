@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Detect Spam - AI Spam Detection System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9 col-xl-8">
+        
+        {% if not model_ready %}
+        <div class="alert alert-warning border-0 cyber-alert mb-4 shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-triangle-exclamation fa-2x me-3 text-warning"></i>
+                <div>
+                    <h6 class="alert-heading fw-bold mb-1">Model Not Found!</h6>
+                    <p class="mb-0 small">
+                        The AI classifier has not been trained yet. Please execute <code>python train_model.py</code> in the project directory to train and generate the model artifacts.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="cyber-card p-4 p-md-5 mb-4">
+            <div class="text-center mb-4">
+                <h2 class="text-white fw-bold">Message Threat Analyzer</h2>
+                <p class="text-muted-cyber small">
+                    Paste or type an SMS / text message below to classify it against known fraudulent indicators.
+                </p>
+            </div>
+
+            <!-- Quick Samples -->
+            <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+                <span class="text-muted-cyber small me-1"><i class="fa-solid fa-lightbulb text-warning me-1"></i> Quick Test:</span>
+                <button type="button" class="btn btn-sm btn-outline-cyber sample-btn" data-type="spam">
+                    <i class="fa-solid fa-skull-crossbones me-1 text-danger"></i> Spam Example
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-cyber sample-btn" data-type="ham">
+                    <i class="fa-solid fa-circle-check me-1 text-success"></i> Normal Example
+                </button>
+            </div>
+
+            <form id="detectForm" novalidate>
+                <div class="mb-3">
+                    <label for="messageInput" class="form-label text-white d-flex justify-content-between align-items-center">
+                        <span>Message Text:</span>
+                        <span id="charCounter" class="text-muted-cyber small">0 / 1000</span>
+                    </label>
+                    <textarea 
+                        class="form-control cyber-input" 
+                        id="messageInput" 
+                        rows="5" 
+                        placeholder="e.g. 'Congratulations! You won a free prize. Call now to claim.'"
+                    ></textarea>
+                </div>
+
+                <div id="errorAlert" class="alert alert-danger border-0 d-none mb-3 py-2 px-3 small" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i> <span id="errorMessage"></span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mt-4">
+                    <div class="d-flex gap-2">
+                        <button type="submit" id="btnDetect" class="btn btn-cyber-primary px-4 py-2">
+                            <span id="btnSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            <i id="btnIcon" class="fa-solid fa-magnifying-glass me-2"></i> Detect Spam
+                        </button>
+                        <button type="button" id="btnClear" class="btn btn-cyber-secondary px-3 py-2">
+                            <i class="fa-solid fa-eraser me-1"></i> Clear
+                        </button>
+                    </div>
+                    <span class="text-muted-cyber extra-small">
+                        <i class="fa-solid fa-shield-halved text-cyan me-1"></i> Evaluated via Logistic Regression
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <!-- Result Box (Hidden by default) -->
+        <div id="resultContainer" class="d-none">
+            <div id="resultCard" class="cyber-card p-4 text-center border-result">
+                <div id="resultIconWrapper" class="result-icon-wrapper mb-3">
+                    <i id="resultIcon" class="fa-solid fa-4x"></i>
+                </div>
+                
+                <h3 id="resultTitle" class="fw-bold mb-2"></h3>
+                <p id="resultSubtitle" class="text-muted-cyber small mb-4"></p>
+
+                <div class="confidence-box p-3 rounded mx-auto" style="max-width: 420px;">
+                    <div class="d-flex justify-content-between text-white small mb-1">
+                        <span>Model Confidence:</span>
+                        <strong id="confidenceText" class="fw-bold">0%</strong>
+                    </div>
+                    <div class="progress cyber-progress" style="height: 12px;">
+                        <div id="confidenceBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top border-secondary text-muted-cyber extra-small">
+                    <span>Logged to local history at: </span><span id="scanTimestamp" class="text-white"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

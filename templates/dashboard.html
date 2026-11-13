@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - AI Threat Intelligence{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="text-white fw-bold mb-1">Threat Intelligence Dashboard</h2>
+        <p class="text-muted-cyber small mb-0">Overview of all processed messages, phishing links, and batch files.</p>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex gap-2">
+        <a href="{{ url_for('detect') }}" class="btn btn-cyber-primary btn-sm px-3 py-2">
+            <i class="fa-solid fa-comment-sms me-1"></i> Scan Message
+        </a>
+        <a href="{{ url_for('detect_link') }}" class="btn btn-cyber-outline btn-sm px-3 py-2">
+            <i class="fa-solid fa-link me-1"></i> Inspect Link
+        </a>
+        <a href="{{ url_for('detect_file') }}" class="btn btn-cyber-secondary btn-sm px-3 py-2">
+            <i class="fa-solid fa-file-shield me-1"></i> Scan File
+        </a>
+    </div>
+</div>
+
+<!-- Metrics Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="cyber-card p-3 p-md-4 h-100 border-start border-4 border-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted-cyber text-uppercase extra-small fw-bold">Total Scans</span>
+                    <h2 class="text-white fw-bold my-1">{{ total_scans }}</h2>
+                    <span class="text-muted-cyber extra-small">All time inquiries</span>
+                </div>
+                <div class="stat-icon-wrapper bg-info-subtle text-info">
+                    <i class="fa-solid fa-calculator fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="cyber-card p-3 p-md-4 h-100 border-start border-4 border-danger">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted-cyber text-uppercase extra-small fw-bold">Threats Detected</span>
+                    <h2 class="text-danger fw-bold my-1">{{ spam_scans }}</h2>
+                    <span class="text-muted-cyber extra-small">{{ spam_rate }}% threat ratio</span>
+                </div>
+                <div class="stat-icon-wrapper bg-danger-subtle text-danger">
+                    <i class="fa-solid fa-shield-virus fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="cyber-card p-3 p-md-4 h-100 border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted-cyber text-uppercase extra-small fw-bold">Genuine / Clean</span>
+                    <h2 class="text-success fw-bold my-1">{{ ham_scans }}</h2>
+                    <span class="text-muted-cyber extra-small">Verified safe items</span>
+                </div>
+                <div class="stat-icon-wrapper bg-success-subtle text-success">
+                    <i class="fa-solid fa-circle-check fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="cyber-card p-3 p-md-4 h-100 border-start border-4 border-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted-cyber text-uppercase extra-small fw-bold">Detector Breakdown</span>
+                    <div class="d-flex gap-2 my-1 align-items-center">
+                        <span class="badge bg-secondary-subtle text-light" title="Messages"><i class="fa-solid fa-comment-sms text-cyan"></i> {{ msg_scans }}</span>
+                        <span class="badge bg-secondary-subtle text-light" title="Links"><i class="fa-solid fa-link text-warning"></i> {{ link_scans }}</span>
+                        <span class="badge bg-secondary-subtle text-light" title="Files"><i class="fa-solid fa-file text-info"></i> {{ file_scans }}</span>
+                    </div>
+                    <span class="text-muted-cyber extra-small">SMS / Link / File</span>
+                </div>
+                <div class="stat-icon-wrapper bg-primary-subtle text-primary">
+                    <i class="fa-solid fa-layer-group fa-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity Table -->
+<div class="cyber-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-white mb-0">
+            <i class="fa-solid fa-list-check me-2 text-cyan"></i> Recent Activity (Latest 10 Scans)
+        </h5>
+        {% if total_scans > 0 %}
+        <a href="{{ url_for('history') }}" class="btn btn-outline-cyber btn-sm">
+            View All History <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+        {% endif %}
+    </div>
+
+    {% if total_scans == 0 %}
+    <div class="text-center py-5">
+        <i class="fa-solid fa-box-open fa-3x text-muted-cyber mb-3"></i>
+        <h6 class="text-white">No scans recorded yet!</h6>
+        <p class="text-muted-cyber small mb-3">Test a message, link, or file to begin building your activity log.</p>
+        <a href="{{ url_for('detect') }}" class="btn btn-cyber-primary btn-sm px-3">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Scan First Item
+        </a>
+    </div>
+    {% else %}
+    <div class="table-responsive">
+        <table class="table cyber-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 70px;">ID</th>
+                    <th scope="col" style="width: 100px;">Type</th>
+                    <th scope="col">Content / Target</th>
+                    <th scope="col" style="width: 170px;">Verdict</th>
+                    <th scope="col" style="width: 110px;">Confidence</th>
+                    <th scope="col" style="width: 170px;">Scanned At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in recent_scans %}
+                <tr>
+                    <td class="text-muted-cyber small">#{{ item['id'] }}</td>
+                    <td>
+                        {% if item['scan_type'] == 'link' %}
+                        <span class="badge bg-warning-subtle text-warning border border-warning">
+                            <i class="fa-solid fa-link me-1"></i> Link
+                        </span>
+                        {% elif item['scan_type'] == 'file' %}
+                        <span class="badge bg-info-subtle text-info border border-info">
+                            <i class="fa-solid fa-file-lines me-1"></i> File
+                        </span>
+                        {% else %}
+                        <span class="badge bg-primary-subtle text-cyan border border-primary">
+                            <i class="fa-solid fa-comment-sms me-1"></i> SMS
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-white text-truncate" style="max-width: 320px;" title="{{ item['message'] }}">
+                        {{ item['message'] }}
+                    </td>
+                    <td>
+                        {% if 'Spam' in item['result'] or 'Phishing' in item['result'] or 'High Threat' in item['result'] %}
+                        <span class="badge cyber-badge-spam">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> {{ item['result'] }}
+                        </span>
+                        {% else %}
+                        <span class="badge cyber-badge-ham">
+                            <i class="fa-solid fa-check me-1"></i> {{ item['result'] }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="small fw-semibold text-white">{{ item['confidence'] }}%</span>
+                    </td>
+                    <td class="text-muted-cyber small">{{ item['scanned_at'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

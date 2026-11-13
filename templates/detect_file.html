@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}File Detection - AI Batch Document Scanner{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+
+        {% if not model_ready %}
+        <div class="alert alert-warning border-0 cyber-alert mb-4 shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-triangle-exclamation fa-2x me-3 text-warning"></i>
+                <div>
+                    <h6 class="alert-heading fw-bold mb-1">Model Not Found!</h6>
+                    <p class="mb-0 small">
+                        The AI classifier has not been trained yet. Please execute <code>python train_model.py</code> in the project directory first.
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="cyber-card p-4 p-md-5 mb-4">
+            <div class="text-center mb-4">
+                <div class="badge cyber-badge mb-2">
+                    <i class="fa-solid fa-file-shield me-1 text-info"></i> Batch Document & Dataset Inspector
+                </div>
+                <h2 class="text-white fw-bold">Bulk File Spam Scanner</h2>
+                <p class="text-muted-cyber small">
+                    Upload text files, SMS datasets, or chat exports (.csv, .txt, .tsv, .json) to analyze and classify every record in seconds.
+                </p>
+            </div>
+
+            <form id="fileDetectForm" enctype="multipart/form-data">
+                <!-- Upload Dropzone -->
+                <div class="upload-dropzone p-5 text-center rounded border-2 border-dashed border-secondary mb-3" id="dropZone">
+                    <i class="fa-solid fa-cloud-arrow-up fa-3x text-cyan mb-3"></i>
+                    <h5 class="text-white mb-2">Drag and drop your file here, or click to browse</h5>
+                    <p class="text-muted-cyber extra-small mb-3">
+                        Supported file extensions: <strong>.csv, .txt, .tsv, .json, .log</strong> (Max 16 MB)
+                    </p>
+                    <input type="file" id="fileInput" name="file" class="d-none" accept=".csv,.txt,.tsv,.json,.log,.eml">
+                    <button type="button" class="btn btn-outline-cyber px-4 py-2" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa-solid fa-folder-open me-2"></i> Select File
+                    </button>
+                    <div id="selectedFileInfo" class="mt-3 text-cyan fw-semibold d-none">
+                        <i class="fa-solid fa-file-lines me-1"></i> <span id="selectedFileName"></span>
+                    </div>
+                </div>
+
+                <div id="fileErrorAlert" class="alert alert-danger border-0 d-none mb-3 py-2 px-3 small" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-1"></i> <span id="fileErrorMessage"></span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mt-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit" id="btnFileDetect" class="btn btn-cyber-primary px-4 py-2" disabled>
+                            <span id="btnFileSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                            <i id="btnFileIcon" class="fa-solid fa-play me-2"></i> Scan File Content
+                        </button>
+                        <button type="button" id="btnFileClear" class="btn btn-cyber-secondary px-3 py-2">
+                            <i class="fa-solid fa-eraser me-1"></i> Reset
+                        </button>
+                    </div>
+                    <span class="text-muted-cyber extra-small">
+                        <i class="fa-solid fa-bolt text-cyan me-1"></i> High-throughput Scikit-Learn Vectorizer
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <!-- File Scan Result Container -->
+        <div id="fileResultContainer" class="d-none">
+            <!-- Aggregate Metric Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cyber-card p-3 text-center border-start border-4 border-info">
+                        <span class="text-muted-cyber extra-small text-uppercase fw-bold">Records Scanned</span>
+                        <h3 id="resTotalScanned" class="text-white fw-bold my-1">0</h3>
+                        <small class="text-muted-cyber extra-small">Valid text messages</small>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cyber-card p-3 text-center border-start border-4 border-danger">
+                        <span class="text-muted-cyber extra-small text-uppercase fw-bold">Spam Detected</span>
+                        <h3 id="resSpamCount" class="text-danger fw-bold my-1">0</h3>
+                        <small id="resSpamRatio" class="text-muted-cyber extra-small">0% threat ratio</small>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cyber-card p-3 text-center border-start border-4 border-success">
+                        <span class="text-muted-cyber extra-small text-uppercase fw-bold">Genuine Messages</span>
+                        <h3 id="resHamCount" class="text-success fw-bold my-1">0</h3>
+                        <small class="text-muted-cyber extra-small">Clean safe messages</small>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="cyber-card p-3 text-center border-start border-4 border-warning">
+                        <span class="text-muted-cyber extra-small text-uppercase fw-bold">File Threat Level</span>
+                        <h4 id="resThreatLevel" class="fw-bold my-1 text-warning">Pending</h4>
+                        <small class="text-muted-cyber extra-small">Calculated Risk</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Itemized Messages Table -->
+            <div class="cyber-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h5 class="text-white mb-0">
+                        <i class="fa-solid fa-table-list text-cyan me-2"></i> Scanned Items Breakdown
+                    </h5>
+                    <button type="button" id="btnDownloadCSV" class="btn btn-sm btn-outline-cyber">
+                        <i class="fa-solid fa-download me-1"></i> Export Results (CSV)
+                    </button>
+                </div>
+
+                <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+                    <table class="table cyber-table align-middle mb-0" id="fileResultsTable">
+                        <thead class="sticky-top">
+                            <tr>
+                                <th scope="col" style="width: 60px;">#</th>
+                                <th scope="col">Extracted Message</th>
+                                <th scope="col" style="width: 140px;">Verdict</th>
+                                <th scope="col" style="width: 130px;">Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fileResultsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}
+
