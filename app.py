@@ -13,7 +13,14 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, 'database.db')
+
+# Vercel serverless environment compatibility (filesystem is read-only except /tmp)
+IS_VERCEL = bool(os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME'))
+if IS_VERCEL:
+    DB_PATH = '/tmp/database.db'
+else:
+    DB_PATH = os.path.join(BASE_DIR, 'database.db')
+
 MODEL_PATH = os.path.join(BASE_DIR, 'model.pkl')
 VEC_PATH = os.path.join(BASE_DIR, 'vectorizer.pkl')
 METRICS_PATH = os.path.join(BASE_DIR, 'metrics.json')
