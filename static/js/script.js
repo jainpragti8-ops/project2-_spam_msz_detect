@@ -62,14 +62,22 @@ document.addEventListener('DOMContentLoaded', () => {
         messageInput.addEventListener('input', updateCharCount);
     }
 
+    function hideResult() {
+        if (resultContainer) resultContainer.classList.add('d-none');
+    }
+
+    function hideError() {
+        if (errorAlert) errorAlert.classList.add('d-none');
+    }
+
     if (btnClear) {
         btnClear.addEventListener('click', () => {
             if (messageInput) {
                 messageInput.value = '';
                 updateCharCount();
             }
-            if (errorAlert) errorAlert.classList.add('d-none');
-            if (resultContainer) resultContainer.classList.add('d-none');
+            hideError();
+            hideResult();
             if (messageInput) messageInput.focus();
         });
     }
